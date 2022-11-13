@@ -21,7 +21,7 @@ public class ConnectionFactory {
     }
 
     public Connection retrieveConnection() throws SQLException {
-        Connection connection = this.dataSource.getConnection();
-        return connection;
+        return this.dataSource.getConnection();
+
     }
 }

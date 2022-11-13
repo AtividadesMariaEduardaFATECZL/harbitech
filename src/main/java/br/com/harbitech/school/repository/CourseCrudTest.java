@@ -4,13 +4,14 @@ package br.com.harbitech.school.repository;
 import br.com.harbitech.school.model.category.Category;
 import br.com.harbitech.school.model.course.Course;
 import br.com.harbitech.school.model.course.CourseVisibility;
+import br.com.harbitech.school.model.course.dto.CourseDto;
 import br.com.harbitech.school.model.subcategory.SubCategory;
 import br.com.harbitech.school.repository.dao.CourseDAO;
-import br.com.harbitech.school.repository.factory.ConnectionFactory;
 import br.com.harbitech.school.model.subcategory.SubCategoryStatus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 
 public class CourseCrudTest {
     public static void main(String[] args) throws SQLException {
@@ -29,12 +30,5 @@ public class CourseCrudTest {
                 "    Encapsule o acesso em um DAO\n" +
                 "    Connection pool, datasources e outros recursos importantes\n" +
                 "\n", "Entender melhor o banco de dados e um CRUD", subCategory);
-
-        try (Connection connection = new ConnectionFactory().retrieveConnection()) {
-            CourseDAO courseDAO = new CourseDAO(connection);
-//            courseDAO.save(jdbc);
-//            courseDAO.upgradeAllToPublicVisibility();
-            courseDAO.delete("jdbc");
-        }
     }
 }

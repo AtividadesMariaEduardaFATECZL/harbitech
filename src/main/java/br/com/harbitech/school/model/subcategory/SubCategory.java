@@ -86,10 +86,6 @@ public class SubCategory implements Comparable<SubCategory>{
         return category;
     }
 
-    public List<Course> getCourses() {
-        return courses;
-    }
-
     @Override
     public String toString() {
         return "SubCategory{" +

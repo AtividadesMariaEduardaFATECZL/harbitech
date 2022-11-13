@@ -54,29 +54,41 @@ public class CourseDAO {
         }
     }
 
-    public void upgradeAllToPublicVisibility() throws SQLException {
-        String sql = """
-                UPDATE course SET visibility = ?
-                """;
-        try (PreparedStatement pstm = connection.prepareStatement(sql)) {
-            pstm.setString(1, CourseVisibility.PUBLIC.name());
-            pstm.execute();
+    public void updatePublicVisibility() throws SQLException {
+        String sql = "UPDATE course SET visibility = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.execute();
+            stm.setString(1, CourseVisibility.PUBLIC.name());
+            Integer updateLines = stm.getUpdateCount();
+            System.out.println("Modified Lines: " + updateLines);
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
         }
     }
 
     public List<CourseDto> findAll() throws SQLException {
+        connection.setAutoCommit(false);
         List<CourseDto> courses = new ArrayList<>();
         String sql = """
                 SELECT name AS name_course, code_url FROM course
                 """;
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
             pstm.execute();
+            connection.commit();
             turnResultSetInCourse(courses, pstm);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
+        } finally {
+            connection.close();
         }
         return courses;
     }
 
-    public List<CourseReportDto> searchAllWithPublicVisibility() throws SQLException {
+    public List<CourseReportDto> searchAllWithPublicVisibilitySubcategoryAndCategory() throws SQLException {
+        connection.setAutoCommit(false);
         List<CourseReportDto> courses = new ArrayList<>();
         String sql = """
                 SELECT
@@ -86,14 +98,20 @@ public class CourseDAO {
                  subcategory.id AS id_subcategory,
                  subcategory.name AS name_subcategory
                 FROM course course
-                JOIN subcategory subcategory ON course.subcategory_id = subcategory.id\s
+                JOIN subcategory subcategory ON course.subcategory_id = subcategory.id
                 JOIN category category ON subcategory.category_id = category.id
                 WHERE course.visibility = ?
                 """;
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
             pstm.setString(1, CourseVisibility.PUBLIC.name());
             pstm.execute();
+            connection.commit();
             turnResultSetInReportCourse(courses, pstm);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
+        } finally {
+            connection.close();
         }
         return courses;
     }

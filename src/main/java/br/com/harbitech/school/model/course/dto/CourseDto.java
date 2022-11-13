@@ -16,4 +16,12 @@ public class CourseDto {
                 ", codeUrl='" + codeUrl + '\'' +
                 '}';
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getCodeUrl() {
+        return codeUrl;
+    }
 }

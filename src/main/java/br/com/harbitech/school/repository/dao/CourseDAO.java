@@ -5,6 +5,7 @@ import br.com.harbitech.school.model.course.Course;
 import br.com.harbitech.school.model.course.dto.CourseDto;
 import br.com.harbitech.school.model.course.dto.CourseReportDto;
 import br.com.harbitech.school.model.course.CourseVisibility;
+import br.com.harbitech.school.model.subcategory.SubCategory;
 import br.com.harbitech.school.model.subcategory.dto.SubcategoryDto;
 
 import java.sql.*;
@@ -51,8 +52,30 @@ public class CourseDAO {
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
             pstm.setString(1, urlCode);
             pstm.execute();
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
+        } finally {
+            connection.close();
         }
     }
+
+    public void deleteBy(Long id) throws SQLException {
+        connection.setAutoCommit(false);
+        String sql = "DELETE FROM course WHERE id = ?";
+        try (PreparedStatement pstm = connection.prepareStatement(sql)) {
+            pstm.setLong(1, id);
+            pstm.execute();
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
+        } finally {
+            connection.close();
+        }
+    }
+
 
     public void updatePublicVisibility() throws SQLException {
         String sql = "UPDATE course SET visibility = ?";
@@ -72,7 +95,7 @@ public class CourseDAO {
         connection.setAutoCommit(false);
         List<CourseDto> courses = new ArrayList<>();
         String sql = """
-                SELECT name AS name_course, code_url FROM course
+                SELECT id, name AS name_course, code_url FROM course
                 """;
         try (PreparedStatement pstm = connection.prepareStatement(sql)) {
             pstm.execute();
@@ -85,6 +108,29 @@ public class CourseDAO {
             connection.close();
         }
         return courses;
+    }
+
+    public Course findById(Long id) throws SQLException {
+        Course course = new Course();
+        connection.setAutoCommit(false);
+        String sql = "SELECT c.name, c.code_url, c.completion_time_in_hours, c.instructor, c.subcategory_id FROM course c WHERE id = ?";
+        try (PreparedStatement stm = connection.prepareStatement(sql)) {
+            stm.setLong(1, id);
+            stm.execute();
+            try (ResultSet rst = stm.getResultSet()) {
+                while (rst.next()) {
+                    course = new Course(rst.getString("c.name"), rst.getString("c.code_url"),
+                            rst.getInt("completion_time_in_hours"), rst.getString("c.instructor"), (SubCategory) rst.getObject("c.subcategory_id"));
+                }
+            }
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
+        } finally {
+            connection.close();
+        }
+        return course;
     }
 
     public List<CourseReportDto> searchAllWithPublicVisibilitySubcategoryAndCategory() throws SQLException {
@@ -131,9 +177,18 @@ public class CourseDAO {
     private void turnResultSetInCourse(List<CourseDto> courses, PreparedStatement pstm) throws SQLException {
         try (ResultSet rst = pstm.getResultSet()) {
             while (rst.next()) {
-                CourseDto course = new CourseDto(rst.getString("name_course"), rst.getString("code_url"));
+                CourseDto course = new CourseDto(rst.getLong("id"),
+                        rst.getString("name_course"), rst.getString("code_url"));
                 courses.add(course);
             }
+        }
+    }
+
+    private CourseDto turnResultSetInCourse(PreparedStatement pstm) throws SQLException {
+        try (ResultSet rst = pstm.getResultSet()) {
+            CourseDto course = new CourseDto(rst.getLong("id"),
+                    rst.getString("name_course"), rst.getString("code_url"));
+            return course;
         }
     }
 }

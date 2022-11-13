@@ -17,6 +17,11 @@ public class Course {
     private String developedSkills;
     private SubCategory subCategory;
 
+    @Deprecated
+    public Course(){
+
+    };
+
     public Course(String name, String codeUrl, int completionTimeInHours, String instructor, SubCategory subCategory){
         validateNonBlankText(name, "O nome do curso não pode estar em branco.");
         validateNonBlankText(codeUrl, "O código do curso não pode estar em branco.");

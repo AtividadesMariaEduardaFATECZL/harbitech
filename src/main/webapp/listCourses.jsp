@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
@@ -11,7 +12,7 @@
     <table border=1 frame=void rules=rows>
         <tr align=center>
             <th scope="row">Nome</th>
-            <th scope="row">Código da url</th>
+            <th scope="row">CÃ³digo da url</th>
             <th scope="row"></th>
             <th scope="row"></th>
         </tr>
@@ -21,7 +22,7 @@
             <td scope="row">${course.name}<td/>
             <td scope="row">${course.codeUrl}<td/>
             <a href="/harbitech/editaCategoria?id=">edita</a><br><br>
-            <a href="/harbitech/inativaCategoria?codeUrl=">Excluir curso</a>
+            <a href="/Harbitech_war/deleta/courso?id=${course.id}">Excluir curso</a>
         </tr>
         </c:forEach>
         </td>

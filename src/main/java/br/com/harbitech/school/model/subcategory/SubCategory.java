@@ -20,6 +20,17 @@ public class SubCategory implements Comparable<SubCategory>{
     private Category category;
     private List<Course> courses = new ArrayList<>();
 
+    @Deprecated
+    public SubCategory() {
+    }
+
+    //TODO kill me
+    public SubCategory(Long id, String name, String codeUrl) {
+        this.id = id;
+        this.name = name;
+        this.codeUrl = codeUrl;
+    }
+
     public SubCategory(String name, String codeUrl, Category category){
         validateNonBlankText(name, "O nome da sub-categoria não pode estar em branco.");
         validateNonBlankText(codeUrl, "O código da URL da sub-categoria não pode estar em branco.");

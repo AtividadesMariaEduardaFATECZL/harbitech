@@ -7,29 +7,29 @@
     <title>Lista todos os cursos</title>
 </head>
 <body>
-    <center><h1>Lista de cursos</h1> <br/></center>
-    <a href="/harbitech/formNewCategory.jsp">Cadastrar um novo curso</a><br><br>
-    <table border=1 frame=void rules=rows>
-        <tr align=center>
-            <th scope="row">Nome</th>
-            <th scope="row">Código da url</th>
-            <th scope="row"></th>
-            <th scope="row"></th>
-        </tr>
-        <tr>
-            <c:forEach items="${courses}" var="course">
-        <tr>
-            <td scope="row">${course.name}<td/>
-            <td scope="row">${course.codeUrl}<td/>
-            <a href="/harbitech/editaCategoria?id=">edita</a><br><br>
-            <a href="/Harbitech_war/deleta/courso?id=${course.id}">Excluir curso</a>
-        </tr>
-        </c:forEach>
-        </td>
-        <br>
-        <br>
+<center><h1>Lista de cursos</h1> <br/></center>
+<a href="/Harbitech_war/novo-curso">Cadastrar um novo curso</a><br><br>
+<table border=1 frame=void rules=rows>
+    <tr align=center>
+        <th scope="row">Nome</th>
+        <th scope="row">Código da url</th>
+        <th scope="row"></th>
+        <th scope="row"></th>
+    </tr>
+    <tr>
+        <c:forEach items="${courses}" var="course">
+    <tr>
+        <td scope="row">${course.name}<td/>
+        <td scope="row">${course.codeUrl}<td/>
+        <a href="/Harbitech_war/atualiza-curso?id=${course.id}">edita</a><br><br>
+        <a href="/Harbitech_war/deleta/courso?id=${course.id}">Excluir curso</a>
+    </tr>
+    </c:forEach>
+    </td>
+    <br>
+    <br>
 
-        </tr>
-    </table>
+    </tr>
+</table>
 </body>
 </html>

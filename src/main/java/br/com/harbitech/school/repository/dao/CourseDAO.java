@@ -20,13 +20,13 @@ public class CourseDAO {
     }
 
     public void update(Course course) throws SQLException {
+        connection.setAutoCommit(false);
         String sql = """
                 UPDATE course SET name = ?, code_url = ?, completion_time_in_hours = ?, visibility = ?,
                     target_audience = ?, instructor = ?, description = ?,developed_skills = ? WHERE id = ?;
                 """;
 
         try (PreparedStatement pstm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            try (ResultSet rs = pstm.executeQuery()) {
                 pstm.setString(1, course.getName());
                 pstm.setString(2, course.getCodeUrl());
                 pstm.setInt(3, course.getCompletionTimeInHours());
@@ -36,14 +36,8 @@ public class CourseDAO {
                 pstm.setString(7, course.getDescription());
                 pstm.setString(8, course.getDevelopedSkills());
                 pstm.setLong(9, course.getId());
-                pstm.execute();
+            pstm.executeUpdate();
                 connection.commit();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            connection.rollback();
-        } finally {
-            connection.close();
         }
     }
 

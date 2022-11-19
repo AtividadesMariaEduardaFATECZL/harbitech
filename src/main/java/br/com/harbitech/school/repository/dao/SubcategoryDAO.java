@@ -46,13 +46,13 @@ public class SubcategoryDAO {
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setString(1, codeUrl);
             stm.execute();
+            connection.commit();
             try (ResultSet rst = stm.getResultSet()) {
                 while (rst.next()) {
                     subCategory = new SubCategory(rst.getLong("s.id"), rst.getString("s.name"),
                             rst.getString("s.code_url"));
                 }
             }
-            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
             connection.rollback();

@@ -41,13 +41,9 @@ public class UpdateCourse  extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-        try (Connection connection = new ConnectionFactory().retrieveConnection()) {
+        Course course = findCourse(id);
 
-            CourseDAO courseDAO = new CourseDAO(connection);
-
-            Course course = courseDAO.findById(Long.parseLong(id));
-
-            course.setName(name);
+        course.setName(name);
             course.setCodeUrl(code);
             course.setDescription(description);
             course.setInstructor(instructor);
@@ -57,11 +53,24 @@ public class UpdateCourse  extends HttpServlet {
             course.setCompletionTimeInHours(Integer.parseInt(completionTimeInHours));
             course.setSubCategory(findSubcategoryFor(idSubCategory));
 
+        try (Connection connection = new ConnectionFactory().retrieveConnection()) {
+            CourseDAO courseDAO = new CourseDAO(connection);
+
             courseDAO.update(course);
 
 
             response.sendRedirect("/Harbitech_war/cursos");
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Course findCourse(String id) {
+        try (Connection connection = new ConnectionFactory().retrieveConnection()) {
+            CourseDAO courseDAO = new CourseDAO(connection);
+            Course course = courseDAO.findById(Long.parseLong(id));
+            return course;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

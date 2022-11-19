@@ -21,7 +21,7 @@
     <tr>
         <td scope="row">${course.name}<td/>
         <td scope="row">${course.codeUrl}<td/>
-        <a href="/Harbitech_war/atualiza-curso?id=${course.id}">edita</a><br><br>
+        <a href="/Harbitech_war//atualiza-curso-form?id=${course.id}">edita</a><br><br>
         <a href="/Harbitech_war/deleta/courso?id=${course.id}">Excluir curso</a>
     </tr>
     </c:forEach>

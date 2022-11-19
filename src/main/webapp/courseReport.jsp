@@ -8,7 +8,7 @@
 </head>
 <body>
   <center><h1>Relatório de cursos que tem visibilidade pública e estão vínculados a uma categoria/subcategoria</h1> <br/></center>
-  <a href="/harbitech/editaCategoria?id=">Ver todos os cursos</a><br><br>
+  <a href="/Harbitech_war/relatorio/">Ver todos os cursos</a><br><br>
   <table border=1 frame=void rules=rows>
     <tr align=center>
       <th scope="row">Id do curso</th>

@@ -5,7 +5,6 @@ import br.com.harbitech.school.model.course.Course;
 import br.com.harbitech.school.model.course.dto.CourseDto;
 import br.com.harbitech.school.model.course.dto.CourseReportDto;
 import br.com.harbitech.school.model.course.CourseVisibility;
-import br.com.harbitech.school.model.subcategory.SubCategory;
 import br.com.harbitech.school.model.subcategory.dto.SubcategoryDto;
 
 import java.sql.*;
@@ -18,6 +17,34 @@ public class CourseDAO {
 
     public CourseDAO(Connection connection) {
         this.connection = connection;
+    }
+
+    public void update(Course course) throws SQLException {
+        String sql = """
+                UPDATE course SET name = ?, code_url = ?, completion_time_in_hours = ?, visibility = ?,
+                    target_audience = ?, instructor = ?, description = ?,developed_skills = ? WHERE id = ?;
+                """;
+
+        try (PreparedStatement pstm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            try (ResultSet rs = pstm.executeQuery()) {
+                pstm.setString(1, course.getName());
+                pstm.setString(2, course.getCodeUrl());
+                pstm.setInt(3, course.getCompletionTimeInHours());
+                pstm.setString(4, String.valueOf(course.getVisibility()));
+                pstm.setString(5, course.getTargetAudience());
+                pstm.setString(6, course.getInstructor());
+                pstm.setString(7, course.getDescription());
+                pstm.setString(8, course.getDevelopedSkills());
+                pstm.setLong(9, course.getId());
+                pstm.execute();
+                connection.commit();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
+        } finally {
+            connection.close();
+        }
     }
 
     public void save(Course course) throws SQLException {
@@ -113,14 +140,21 @@ public class CourseDAO {
     public Course findById(Long id) throws SQLException {
         Course course = new Course();
         connection.setAutoCommit(false);
-        String sql = "SELECT c.name, c.code_url, c.completion_time_in_hours, c.instructor, c.subcategory_id FROM course c WHERE id = ?";
+        String sql = """
+                SELECT c.id, c.name, c.code_url, c.completion_time_in_hours, c.visibility, c.instructor, c.target_audience,
+                 c.description, c.developed_skills
+                FROM course c WHERE id = ?
+                """;
         try (PreparedStatement stm = connection.prepareStatement(sql)) {
             stm.setLong(1, id);
             stm.execute();
             try (ResultSet rst = stm.getResultSet()) {
                 while (rst.next()) {
-                    course = new Course(rst.getString("c.name"), rst.getString("c.code_url"),
-                            rst.getInt("completion_time_in_hours"), rst.getString("c.instructor"), (SubCategory) rst.getObject("c.subcategory_id"));
+                    course = new Course(rst.getLong("c.id"), rst.getString("c.name"), rst.getString("c.code_url"),
+                            rst.getInt("c.completion_time_in_hours"),
+                            rst.getString("c.target_audience"), rst.getString("c.instructor"),
+                            rst.getString("c.description"), rst.getString("c.developed_skills"),
+                            CourseVisibility.valueOf(rst.getString("c.visibility")));
                 }
             }
             connection.commit();

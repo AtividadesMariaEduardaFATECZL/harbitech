@@ -30,7 +30,6 @@ public class Course {
         validateInterval(completionTimeInHours,1,20,"O tempo estimado deve estar " +
                 "entre 1 hora até 20 horas.");
         validateNonNullClass(subCategory, "A curso deve ter uma sub-categoria associada.");
-
         this.name = name;
         this.codeUrl = codeUrl;
         this.completionTimeInHours = completionTimeInHours;
@@ -49,6 +48,20 @@ public class Course {
         this.description = description;
         this.developedSkills = developedSkills;
         this.subCategory.addCourse(this);
+    }
+
+
+    public Course(Long id, String name, String codeUrl, int completionTimeInHours, String targetAudience, String instructor,
+                  String description, String developedSkills, CourseVisibility visibility) {
+        this.name = name;
+        this.codeUrl = codeUrl;
+        this.completionTimeInHours = completionTimeInHours;
+        this.visibility = visibility;
+        this.targetAudience = targetAudience;
+        this.instructor = instructor;
+        this.description = description;
+        this.developedSkills = developedSkills;
+        this.id = id;
     }
 
     public Long getId() {
@@ -89,6 +102,42 @@ public class Course {
 
     public SubCategory getSubCategory() {
         return subCategory;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCodeUrl(String codeUrl) {
+        this.codeUrl = codeUrl;
+    }
+
+    public void setCompletionTimeInHours(int completionTimeInHours) {
+        this.completionTimeInHours = completionTimeInHours;
+    }
+
+    public void setVisibility(CourseVisibility visibility) {
+        this.visibility = visibility;
+    }
+
+    public void setTargetAudience(String targetAudience) {
+        this.targetAudience = targetAudience;
+    }
+
+    public void setInstructor(String instructor) {
+        this.instructor = instructor;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDevelopedSkills(String developedSkills) {
+        this.developedSkills = developedSkills;
+    }
+
+    public void setSubCategory(SubCategory subCategory) {
+        this.subCategory = subCategory;
     }
 
     public void setId(Long id) {

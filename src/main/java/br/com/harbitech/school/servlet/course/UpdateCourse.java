@@ -15,13 +15,15 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@WebServlet("/cria-curso")
-public class NewCourse extends HttpServlet {
+
+@WebServlet("/atualiza-curso")
+public class UpdateCourse  extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         request.setCharacterEncoding("UTF-8");
 
+        String id = request.getParameter("id");
         String name = request.getParameter("name");
         String code = request.getParameter("codeUrl");
         String completionTimeInHours = request.getParameter("completionTimeInHours");
@@ -42,9 +44,21 @@ public class NewCourse extends HttpServlet {
         try (Connection connection = new ConnectionFactory().retrieveConnection()) {
 
             CourseDAO courseDAO = new CourseDAO(connection);
-            courseDAO.save(new Course(name, code, Integer.parseInt(completionTimeInHours),
-                    CourseVisibility.from(visibility), targetAudience,
-                    instructor, description, developedskills, findSubcategoryFor(idSubCategory)));
+
+            Course course = courseDAO.findById(Long.parseLong(id));
+
+            course.setName(name);
+            course.setCodeUrl(code);
+            course.setDescription(description);
+            course.setInstructor(instructor);
+            course.setDevelopedSkills(developedskills);
+            course.setTargetAudience(targetAudience);
+            course.setVisibility(CourseVisibility.valueOf(visibility));
+            course.setCompletionTimeInHours(Integer.parseInt(completionTimeInHours));
+            course.setSubCategory(findSubcategoryFor(idSubCategory));
+
+            courseDAO.update(course);
+
 
             response.sendRedirect("/Harbitech_war/cursos");
 

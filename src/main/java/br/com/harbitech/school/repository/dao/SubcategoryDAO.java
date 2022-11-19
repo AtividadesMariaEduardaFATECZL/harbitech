@@ -36,31 +36,6 @@ public class SubcategoryDAO {
         return subcategoriesNames;
     }
 
-//    public SubCategory findById(Long id) throws SQLException {
-//        SubCategory subCategory = new SubCategory();
-//        connection.setAutoCommit(false);
-//        String sql = """
-//                SELECT s.name, s.code_url, s.category_id
-//                FROM subcategory s WHERE id = ?
-//                """;
-//        try (PreparedStatement stm = connection.prepareStatement(sql)) {
-//            stm.setLong(1, id);
-//            stm.execute();
-//            try (ResultSet rst = stm.getResultSet()) {
-//                while (rst.next()) {
-//                    subCategory = new SubCategory(rst.getString("s.name"), rst.getString("s.code_url"), category);
-//                }
-//            }
-//            connection.commit();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            connection.rollback();
-//        } finally {
-//            connection.close();
-//        }
-//        return subCategory;
-//    }
-//
     public SubCategory findByCodeUrl(String codeUrl) throws SQLException {
         SubCategory subCategory = new SubCategory();
         connection.setAutoCommit(false);

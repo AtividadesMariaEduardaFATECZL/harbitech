@@ -36,35 +36,38 @@ public class CourseDAO {
                 pstm.setString(7, course.getDescription());
                 pstm.setString(8, course.getDevelopedSkills());
                 pstm.setLong(9, course.getId());
-            pstm.executeUpdate();
+                pstm.executeUpdate();
                 connection.commit();
         }
     }
 
     public void save(Course course) throws SQLException {
         String sql = """
-                INSERT INTO course (name, code_url,completion_time_in_hours,visibility,target_audience,
-                instructor,description,developed_skills,subcategory_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ? ,?)
+                DELIMITER //
+                CREATE PROCEDURE `includes_ongoing_course`(name1 VARCHAR(70), code_url2 VARCHAR(70), completion_time_in_hours3 INT,
+                                                           visibility4 ENUM ('PUBLIC','PRIVATE'), target_audience5 VARCHAR(250),
+                                                           instructor6 VARCHAR(70), description7 TEXT,
+                                                           developed_skills8 TEXT, subcategory_id9 BIGINT)
+                BEGIN
+                    INSERT INTO course(name, code_url,completion_time_in_hours,visibility,target_audience,
+                                        instructor, description, developed_skills, subcategory_id)
+                    VALUES(name1, code_url2,completion_time_in_hours3,visibility4,target_audience5,
+                            instructor6, description7, developed_skills8, subcategory_id9);
+                END//
                 """;
 
-        try (PreparedStatement pstm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            pstm.setString(1, course.getName());
-            pstm.setString(2, course.getCodeUrl());
-            pstm.setInt(3, course.getCompletionTimeInHours());
-            pstm.setString(4, String.valueOf(course.getVisibility()));
-            pstm.setString(5, course.getTargetAudience());
-            pstm.setString(6, course.getInstructor());
-            pstm.setString(7, course.getDescription());
-            pstm.setString(8, course.getDevelopedSkills());
-            pstm.setLong(9, course.getSubCategory().getId());
-            pstm.execute();
+        try (CallableStatement statement = connection.prepareCall("{call includes_ongoing_course(?, ?, ?, ?, ?, ?, ?, ?, ?)}")) {
 
-            try (ResultSet rst = pstm.getGeneratedKeys()) {
-                while (rst.next()) {
-                    course.setId(rst.getLong(1));
-                }
-            }
+            statement.setString(1, course.getName());
+            statement.setString(2, course.getCodeUrl());
+            statement.setInt(3, course.getCompletionTimeInHours());
+            statement.setString(4, String.valueOf(course.getVisibility()));
+            statement.setString(5, course.getTargetAudience());
+            statement.setString(6, course.getInstructor());
+            statement.setString(7, course.getDescription());
+            statement.setString(8, course.getDevelopedSkills());
+            statement.setLong(9, course.getSubCategory().getId());
+            statement.executeQuery();
         }
     }
 
